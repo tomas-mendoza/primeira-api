@@ -13,13 +13,13 @@ export const createUserSchema = z.object({
 
 export const getUserSchema = z.object({
   params: z.object({
-    id: z.coerce.number().min(1, { message: 'The ID must be higher or equal than 1' })
+    id: z.coerce.number().min(1, { message: 'The ID must be higher than or equal to 1' })
   })
 });
 
 export const updateUserSchema = z.object({
   params: z.object({
-    id: z.coerce.number().min(1, { message: 'The ID must be higher or equal than 1' })
+    id: z.coerce.number().min(1, { message: 'The ID must be higher than or equal to 1' })
   }),
   body: z.object({
     name: z.
