@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import Role from '../models/Role';
 
 export const createUserSchema = z.object({
   body: z.object({
@@ -7,7 +8,9 @@ export const createUserSchema = z.object({
     age: z.
       number().int({ message: 'The age must be a integer!' }),
     cpf: z.
-      string().refine((value) => value.match(/^\d{3}\d{3}\d{3}\d{2}$/g), { message: 'The CPF must be valid!' })
+      string().refine((value) => value.match(/^\d{3}\d{3}\d{3}\d{2}$/g), { message: 'The CPF must be valid!' }),
+    role_id: z.
+      coerce.number().min(1, { message: 'The role ID must be higher than or equal to 1' }).optional()
   })
 });
 
@@ -27,6 +30,8 @@ export const updateUserSchema = z.object({
     age: z.
       number().int({ message: 'The age must be a integer!' }).optional(),
     cpf: z.
-      string().refine((value) => value.match(/^\d{3}\d{3}\d{3}\d{2}$/g), { message: 'The CPF must be valid!' }).optional()
+      string().refine((value) => value.match(/^\d{3}\d{3}\d{3}\d{2}$/g), { message: 'The CPF must be valid!' }).optional(),
+    role_id: z.
+      coerce.number().min(1, { message: 'The role ID must be higher than or equal to 1' }).optional()
   })
 });

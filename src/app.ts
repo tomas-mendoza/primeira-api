@@ -15,13 +15,27 @@ const roles: Role[] = [];
 app.get('/', (req: Request, res: Response) => res.json({ message: 'Hello world!' }));
 
 app.post('/users/create', validate(createUserSchema), (req, res) => {
-  const { name, age, cpf }: User = req.body
+  const { name, age, cpf, role_id } = req.body;
 
-  const user = { 
+  const user: User = { 
     id: users.length === 0 ? 1 : users.slice(-1)[0].id + 1,
     name, 
     age, 
-    cpf 
+    cpf,
+    role: null
+  }
+
+  if(role_id) {
+    const roleIndex = roles.findIndex((role) => role.id === parseInt(role_id));
+
+    if(roleIndex === -1) {
+      return res.status(404).json({
+        status: 'Internal server error!',
+        message: 'The role doesn\'t exist'
+      });
+    }
+
+    user.role = roles[roleIndex];
   }
 
   users.push(user);
@@ -92,7 +106,7 @@ app.patch('/users/update/:id', validate(updateUserSchema), (req, res) => {
     });
   }
 
-  const { name, age, cpf } = req.body;
+  const { name, age, cpf, role_id } = req.body;
 
   if(name) {
     users[userIndex].name = name;
@@ -104,6 +118,19 @@ app.patch('/users/update/:id', validate(updateUserSchema), (req, res) => {
 
   if(cpf) {
     users[userIndex].cpf = cpf;
+  }
+
+  if(role_id) {
+    const roleIndex = roles.findIndex((role) => role.id === parseInt(role_id));
+
+    if(roleIndex === -1) {
+      return res.status(404).json({
+        status: 'Internal server error!',
+        message: 'The role doesn\'t exist'
+      });
+    }
+
+    users[userIndex].role = roles[roleIndex];
   }
 
   res.status(200).json({
@@ -169,6 +196,12 @@ app.delete('/roles/delete/:id', validate(getRoleSchema), (req, res) => {
       message: 'The role doesn\'t exist'
     });
   }
+
+  users.map((user) => {
+    if(user.role !== null && user.role.id === roles[roleIndex].id) {
+      user.role = null;
+    }
+  });
 
   roles.splice(roleIndex, 1);
 

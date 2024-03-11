@@ -1,8 +1,11 @@
+import Role from "./Role";
+
 type User = {
   id: number,
   name: string,
   age: number,
-  cpf: string
+  cpf: string,
+  role: Role | null
 }
 
-export default User;
+export default User; 
